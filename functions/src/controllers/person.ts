@@ -6,7 +6,8 @@ import { PersonStatus } from '../models/person';
 
 export const validate = (method: string) => {
     switch (method) {
-        case 'createPerson': {
+        case 'createPerson':
+        case 'updatePerson': {
             return [
                 body('name').exists().isString(),
                 body('status')
@@ -95,6 +96,23 @@ export const getPerson = async (
         })
             .status(200)
             .end();
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const updatePerson = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const success = await PersonModel.update(req.params.id, req.body);
+        if (!success) {
+            res.sendStatus(400).end();
+        } else {
+            res.sendStatus(204).end();
+        }
     } catch (err) {
         return next(err);
     }

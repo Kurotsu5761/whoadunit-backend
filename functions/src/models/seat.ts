@@ -10,7 +10,7 @@ export enum SeatType {
 
 export type Seat = {
     id: string | null;
-    year: number;
+    electionId: string;
     type: SeatType;
     code: string;
     state: string;
@@ -58,11 +58,10 @@ export const removeSeatPerson = async (id: string) => {
     }
 };
 
-export const list = async (year?: number) => {
+export const list = async (electionId?: string) => {
     let querySnapshot;
-    if (typeof year !== 'undefined') {
-        console.log(year);
-        querySnapshot = await db.where('year', '==', +year).get();
+    if (typeof electionId !== 'undefined') {
+        querySnapshot = await db.where('electionId', '==', electionId).get();
     } else {
         querySnapshot = await db.get();
     }

@@ -5,7 +5,6 @@ import { SeatController } from '../controllers';
 const router = Router();
 
 router.get('/', SeatController.listSeats);
-
 router.post(
     '/',
     SeatController.validate('createSeat'),
@@ -13,15 +12,14 @@ router.post(
 );
 
 router.get('/:id', SeatController.getSeat);
+router.put('/:id', SeatController.updateSeat);
+router.delete('/:id', SeatController.removeSeat);
 
 router.post(
     '/:id/assign',
     SeatController.validate('assignSeat'),
     SeatController.assignSeat,
 );
-
-router.delete('/:id', SeatController.removeSeat);
-
 router.post('/:id/remove', SeatController.removeSeatPerson);
 
 export default router;

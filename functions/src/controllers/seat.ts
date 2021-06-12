@@ -5,13 +5,14 @@ import { SeatType } from '../models/seat';
 
 export const validate = (method: string) => {
     switch (method) {
-        case 'createSeat': {
+        case 'createSeat':
+        case 'updateSeat': {
             return [
                 body('type')
                     .exists()
                     .isString()
                     .isIn([...Object.values(SeatType)]),
-                body('year').exists().isInt(),
+                body('electionId').exists().isInt(),
                 body('code').exists().isString(),
                 body('state').exists().isString(),
                 body('name').exists().isString(),
@@ -57,7 +58,7 @@ export const listSeats = async (
 ) => {
     try {
         const list = await SeatModel.list(
-            req.query['year'] as unknown as number,
+            req.query['electionId'] as unknown as string,
         );
 
         res.json({
@@ -86,6 +87,23 @@ export const getSeat = async (
         })
             .status(200)
             .end();
+    } catch (err) {
+        return next(err);
+    }
+};
+
+export const updateSeat = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const success = await SeatModel.update(req.params.id, req.body);
+        if (!success) {
+            res.sendStatus(400).end();
+        } else {
+            res.sendStatus(204).end();
+        }
     } catch (err) {
         return next(err);
     }

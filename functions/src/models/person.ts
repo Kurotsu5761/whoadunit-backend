@@ -4,15 +4,15 @@ import { SeatModel } from '.';
 export const db = app.firestore().collection('persons');
 
 export enum ContactDetailType {
-    Email = 'email',
-    PhoneNumber = 'phoneNumber',
-    Facebook = 'facebook',
-    Twitter = 'twitter',
+    Email = 'Email',
+    PhoneNumber = 'Phone Number',
+    Facebook = 'Facebook',
+    Twitter = 'Twitter',
 }
 
 export enum PersonStatus {
-    Incumbent = 'incumbent',
-    Inactive = 'inactive',
+    Incumbent = 'Incumbent',
+    Inactive = 'Inactive',
 }
 
 export type ContactDetail = {

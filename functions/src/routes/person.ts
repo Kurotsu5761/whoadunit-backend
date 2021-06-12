@@ -5,7 +5,6 @@ import { PersonController } from '../controllers';
 const router = Router();
 
 router.get('/', PersonController.listPersons);
-
 router.post(
     '/',
     PersonController.validate('createPerson'),
@@ -13,17 +12,14 @@ router.post(
 );
 
 router.get('/:id', PersonController.getPerson);
-
-router.put('/:id');
+router.put('/:id', PersonController.updatePerson);
+router.delete('/:id', PersonController.removePerson);
 
 router.patch(
     '/:id/add-contact',
     PersonController.validate('addContact'),
     PersonController.addContact,
 );
-
-router.delete('/:id', PersonController.removePerson);
-
 router.patch('/:id/remove-contact', PersonController.removeContact);
 
 export default router;
