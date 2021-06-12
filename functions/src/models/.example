@@ -1,0 +1,14 @@
+import app from '../firebase';
+const db = app.firestore().collection('$COLLECTION_NAME');
+
+export type COLLECTION_TYPE = {
+    ...
+};
+
+export const create = async (var: COLLECTION_TYPE) => {};
+
+export const list = async () => {};
+
+export const get = async (id: string) => {};
+
+export const remove = async (id: string) => {};
