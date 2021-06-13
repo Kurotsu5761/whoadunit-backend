@@ -41,22 +41,9 @@ export const list = async (): Promise<Person[]> => {
 
     await Promise.all(
         querySnapshot.docs.map(async (document) => {
-            const seats = await SeatModel.db
-                .where('personId', '==', document.id)
-                .get();
-            const seatArray: Seat[] = [];
-
-            seats.forEach((document) => {
-                seatArray.push({
-                    id: document.id,
-                    ...document.data(),
-                } as Seat);
-            });
-
             documents.push({
                 id: document.id,
                 ...document.data(),
-                seats: seatArray,
             } as Person);
         }),
     );
@@ -94,7 +81,7 @@ export const update = async (id: string, person: Person) => {
         return false;
     }
     try {
-        await document.ref.update(person);
+        await document.ref.set(person);
         return true;
     } catch (error) {
         console.error(error);

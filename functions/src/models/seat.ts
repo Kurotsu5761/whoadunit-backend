@@ -70,15 +70,9 @@ export const list = async (electionId?: string) => {
     await Promise.all(
         querySnapshot.docs.map(async (document) => {
             const data = document.data();
-            let person;
-
-            if (data?.personId) {
-                person = (await PersonModel.db.doc(data.personId).get()).data();
-            }
             documents.push({
                 id: document.id,
                 ...data,
-                person,
             } as Seat);
         }),
     );
@@ -112,7 +106,7 @@ export const update = async (id: string, seat: Seat) => {
         return false;
     }
     try {
-        await document.ref.update(seat);
+        await document.ref.set(seat);
         return true;
     } catch (error) {
         console.error(error);

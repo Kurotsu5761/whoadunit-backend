@@ -19,12 +19,9 @@ export const list = async (): Promise<Election[]> => {
     const documents: Election[] = [];
     await Promise.all(
         querySnapshot.docs.map(async (document) => {
-            const seats = (await SeatModel.list(document.id)) ?? [];
-
             documents.push({
                 id: document.id,
                 ...document.data(),
-                seats,
             } as Election);
         }),
     );
@@ -37,9 +34,12 @@ export const get = async (id: string): Promise<Election | null> => {
     if (!document.exists) {
         return null;
     } else {
+        const seats = (await SeatModel.list(document.id)) ?? [];
+
         return {
             id: document.id,
             ...document.data(),
+            seats,
         } as Election;
     }
 };
