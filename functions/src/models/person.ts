@@ -1,6 +1,6 @@
-import { Seat } from './seat';
 import app from '../firebase';
 import { SeatModel } from '.';
+import { Seat } from './seat';
 export const db = app.firestore().collection('persons');
 
 export enum ContactDetailType {
@@ -27,7 +27,7 @@ export type Person = {
     profilePictures: string[];
     address: string;
     contactDetails: ContactDetail[];
-    seats: Seat[];
+    seatIds: string[];
 };
 
 export const create = async (person: Person) => {
@@ -41,9 +41,19 @@ export const list = async (): Promise<Person[]> => {
 
     await Promise.all(
         querySnapshot.docs.map(async (document) => {
+            const seats = await SeatModel.db
+                .where('personId', '==', document.id)
+                .get();
+            const seatArray: string[] = [];
+
+            seats.forEach((document) => {
+                seatArray.push(document.id);
+            });
+
             documents.push({
                 id: document.id,
                 ...document.data(),
+                seatIds: seatArray,
             } as Person);
         }),
     );
@@ -59,19 +69,34 @@ export const get = async (id: string): Promise<Person | null> => {
         const seats = await SeatModel.db
             .where('personId', '==', document.id)
             .get();
-        const seatArray: Seat[] = [];
+        const seatArray: string[] = [];
 
         seats.forEach((document) => {
-            seatArray.push({
-                id: document.id,
-                ...document.data(),
-            } as Seat);
+            seatArray.push(document.id);
         });
         return {
             id: document.id,
             ...document.data(),
-            seats: seatArray,
+            seatIds: seatArray,
         } as Person;
+    }
+};
+
+export const getSeats = async (id: string): Promise<Seat[] | null> => {
+    const document = await db.doc(id).get();
+
+    if (!document.exists) {
+        return null;
+    } else {
+        const seats = await SeatModel.db
+            .where('personId', '==', document.id)
+            .get();
+        const seatArray: Seat[] = [];
+
+        seats.forEach((document) => {
+            seatArray.push({ id: document.id, ...document.data() } as Seat);
+        });
+        return seatArray;
     }
 };
 

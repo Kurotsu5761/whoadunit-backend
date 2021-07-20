@@ -64,6 +64,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.runtimeconfig.json
 
 # VS code related
 .vscode/

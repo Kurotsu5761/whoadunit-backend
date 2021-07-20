@@ -101,6 +101,27 @@ export const getPerson = async (
     }
 };
 
+export const getSeats = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const seats = await PersonModel.getSeats(req.params.id);
+
+        if (!seats) {
+            return res.sendStatus(404);
+        }
+        res.json({
+            data: seats,
+        })
+            .status(200)
+            .end();
+    } catch (err) {
+        return next(err);
+    }
+};
+
 export const updatePerson = async (
     req: Request,
     res: Response,

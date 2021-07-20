@@ -15,6 +15,8 @@ router.get('/:id', PersonController.getPerson);
 router.put('/:id', PersonController.updatePerson);
 router.delete('/:id', PersonController.removePerson);
 
+router.get('/:id/seats', PersonController.getSeats);
+
 router.patch(
     '/:id/add-contact',
     PersonController.validate('addContact'),

@@ -1,8 +1,10 @@
+import { UserType } from './models/auth';
 require('./firebase');
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 import * as cors from 'cors';
-import { election, person, seat } from './routes';
+import * as jwtUtil from './util/jwt';
+import { election, person, seat, auth } from './routes';
 
 // Firebase Initialization
 
@@ -26,6 +28,22 @@ app.use(
         res: express.Response,
         next: express.NextFunction,
     ) => {
+        console.log(req.path);
+        if (req.method !== 'GET' && !req.path.startsWith('/auth')) {
+            const bearer = req.headers['authorization'];
+            if (!bearer || bearer.split(' ').length !== 2) {
+                return res.sendStatus(401).end();
+            }
+            try {
+                const token = bearer.split(' ')[1];
+                const user = jwtUtil.verify(token);
+                if (user.type !== UserType.ADMIN) {
+                    return res.sendStatus(401).end();
+                }
+            } catch {
+                return res.sendStatus(401).end();
+            }
+        }
         next();
     },
 );
@@ -34,6 +52,7 @@ app.use(
 app.use('/elections', election);
 app.use('/seats', seat);
 app.use('/persons', person);
+app.use('/auth', auth);
 
 /**
  * Express Application Setup Ends

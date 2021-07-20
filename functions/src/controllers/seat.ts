@@ -12,7 +12,7 @@ export const validate = (method: string) => {
                     .exists()
                     .isString()
                     .isIn([...Object.values(SeatType)]),
-                body('electionId').exists().isInt(),
+                body('electionId').exists().isString(),
                 body('code').exists().isString(),
                 body('state').exists().isString(),
                 body('name').exists().isString(),
