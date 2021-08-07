@@ -32,6 +32,9 @@ export type Person = {
 
 export const create = async (person: Person) => {
     const createdData = await db.add(person);
+    person.seatIds.forEach(async (seatId) => {
+        await SeatModel.assignSeat(seatId, createdData.id);
+    });
     return createdData.id;
 };
 
@@ -66,18 +69,9 @@ export const get = async (id: string): Promise<Person | null> => {
     if (!document.exists) {
         return null;
     } else {
-        const seats = await SeatModel.db
-            .where('personId', '==', document.id)
-            .get();
-        const seatArray: string[] = [];
-
-        seats.forEach((document) => {
-            seatArray.push(document.id);
-        });
         return {
             id: document.id,
             ...document.data(),
-            seatIds: seatArray,
         } as Person;
     }
 };
@@ -106,7 +100,22 @@ export const update = async (id: string, person: Person) => {
         return false;
     }
     try {
+        if (person.seatIds?.length > 0) {
+            console.log(person.seatIds);
+            person.seatIds.forEach(async (seatId) => {
+                const seats = await SeatModel.get(seatId);
+                console.log(seats);
+                if (!seats) {
+                    const wrongSeatId = person.seatIds.indexOf(seatId);
+                    person.seatIds.splice(wrongSeatId);
+                    return;
+                }
+                await SeatModel.assignSeat(seatId, id);
+            });
+        }
+        console.log(person);
         await document.ref.set(person);
+
         return true;
     } catch (error) {
         console.error(error);

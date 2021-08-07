@@ -28,8 +28,8 @@ app.use(
         res: express.Response,
         next: express.NextFunction,
     ) => {
-        console.log(req.path);
         if (req.method !== 'GET' && !req.path.startsWith('/auth')) {
+            console.log(req.path);
             const bearer = req.headers['authorization'];
             if (!bearer || bearer.split(' ').length !== 2) {
                 return res.sendStatus(401).end();

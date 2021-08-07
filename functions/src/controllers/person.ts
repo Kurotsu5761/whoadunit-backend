@@ -49,6 +49,9 @@ export const createPerson = async (
         if (!body.profilePictures) {
             body.profilePictures = [];
         }
+        if (!body.seatIds) {
+            body.seatIds = [];
+        }
 
         const personId = await PersonModel.create(body);
 
